@@ -1,16 +1,17 @@
-"use client"
+"use client";
 
-import { ScanFace, UserPlus } from "lucide-react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { ScanFace, UserPlus, Users } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const links = [
   { href: "/", label: "Cadastro", icon: UserPlus },
   { href: "/entrar", label: "Validar Rosto", icon: ScanFace },
-]
+  { href: "/residentes", label: "Residentes", icon: Users },
+];
 
 export function Navbar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <nav className="sticky top-0 z-50 border-b border-slate-700/50 bg-slate-900/80 backdrop-blur-md">
@@ -20,12 +21,14 @@ export function Navbar() {
           className="flex items-center gap-2 text-lg font-bold text-white"
         >
           <ScanFace className="h-5 w-5 text-emerald-400" />
-          <span>Face<span className="text-emerald-400">ID</span></span>
+          <span>
+            Face<span className="text-emerald-400">ID</span>
+          </span>
         </Link>
 
         <div className="flex items-center gap-1">
           {links.map(({ href, label, icon: Icon }) => {
-            const isActive = pathname === href
+            const isActive = pathname === href;
             return (
               <Link
                 key={href}
@@ -39,10 +42,10 @@ export function Navbar() {
                 <Icon className="h-4 w-4" />
                 {label}
               </Link>
-            )
+            );
           })}
         </div>
       </div>
     </nav>
-  )
+  );
 }

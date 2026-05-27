@@ -196,9 +196,9 @@ export default function ValidarRosto() {
                   </p>
                 </div>
               )}
-              {errors.imagem && (
+              {errors.photo && (
                 <p className="mt-1 text-xs text-red-400">
-                  {errors.imagem.message}
+                  {errors.photo.message}
                 </p>
               )}
             </div>
