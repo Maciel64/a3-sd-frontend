@@ -1,8 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
 import {
   Camera,
   CheckCircle2,
@@ -13,11 +11,13 @@ import {
   User,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { CameraCapture } from "@/components/camera-capture";
 import { api } from "@/infra/api";
+import { usePostApiRecognize } from "@/lib/api/client";
 
 const schema = z.object({
   photo: z.instanceof(File, { message: "Foto é obrigatória" }),
@@ -25,10 +25,6 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 type InputMode = "camera" | "upload";
-
-interface RecognizeResponse {
-  nome: string;
-}
 
 export default function ValidarRosto() {
   const {
@@ -46,15 +42,18 @@ export default function ValidarRosto() {
   const [inputMode, setInputMode] = useState<InputMode>("camera");
   const [residentName, setResidentName] = useState<string | null>(null);
 
-  const mutation = useMutation<RecognizeResponse, AxiosError, FormData>({
-    mutationFn: async (data) => {
-      const payload = new FormData();
-      payload.append("photo", data.photo);
-      const res = await api.post<RecognizeResponse>("/recognize", payload);
-      return res.data;
-    },
-    onSuccess: (data) => {
-      setResidentName(data.nome);
+  const mutation = usePostApiRecognize({
+    mutation: {
+      mutationFn: async (data) => {
+        const payload = new FormData();
+        payload.append("photo", data.data.photo);
+        const res = await api.post("/api/recognize", payload);
+
+        return res.data;
+      },
+      onSuccess: (data) => {
+        setResidentName(data.resident?.name || null);
+      },
     },
   });
 
@@ -79,11 +78,11 @@ export default function ValidarRosto() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const onSubmit = (data: FormData) => mutation.mutate(data);
+  const onSubmit = (data: FormData) => mutation.mutate({ data });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
+      <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
         <div className="w-full max-w-lg">
           <div className="mb-8 text-center">
             <div className="mb-4 inline-flex items-center justify-center rounded-full bg-emerald-500/10 p-4">
@@ -100,9 +99,9 @@ export default function ValidarRosto() {
           <div className="rounded-2xl border border-slate-700 bg-slate-800/50 p-6 shadow-xl backdrop-blur-sm">
             <div className="mb-6">
               <div className="mb-2 flex items-center justify-between">
-                <label className="text-sm font-medium text-slate-300">
+                <span className="text-sm font-medium text-slate-300">
                   Imagem para validação
-                </label>
+                </span>
                 {!previewUrl && (
                   <div className="flex gap-1 rounded-lg bg-slate-700/50 p-0.5">
                     <button
@@ -135,10 +134,12 @@ export default function ValidarRosto() {
 
               {previewUrl ? (
                 <div className="relative overflow-hidden rounded-xl border border-slate-600 bg-slate-900/50">
-                  <img
+                  <Image
+                    width={1920}
+                    height={1080}
                     src={previewUrl}
                     alt="Preview"
-                    className="aspect-[4/3] w-full object-cover"
+                    className="aspect-4/3 w-full object-cover"
                   />
                   <button
                     type="button"
@@ -151,7 +152,7 @@ export default function ValidarRosto() {
               ) : inputMode === "camera" ? (
                 <div className="relative">
                   <div className="pointer-events-none absolute inset-0 z-10">
-                    <div className="relative aspect-[4/3] w-full rounded-xl">
+                    <div className="relative aspect-4/3 w-full rounded-xl">
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="h-60 w-48 rounded-[50%] border-2 border-dashed border-emerald-400/50" />
                       </div>
@@ -173,10 +174,7 @@ export default function ValidarRosto() {
                   />
                 </div>
               ) : (
-                <div
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-600 p-10 text-center transition-all hover:border-emerald-500/50 hover:bg-slate-700/30"
-                >
+                <div className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-600 p-10 text-center transition-all hover:border-emerald-500/50 hover:bg-slate-700/30">
                   <input
                     ref={fileInputRef}
                     type="file"

@@ -1,9 +1,10 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { Loader2, Search, User, Users, X } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import { api } from "@/infra/api";
+import { useGetApiResidents } from "@/lib/api/client";
 
 interface Resident {
   id?: string | number;
@@ -19,25 +20,15 @@ export default function ResidentesList() {
     null,
   );
 
-  const {
-    data: residents,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["residents"],
-    queryFn: async () => {
-      const res = await api.get<Resident[]>("/residents");
-      return res.data;
-    },
-  });
+  const { data: residents, isLoading, isError } = useGetApiResidents();
 
   const filteredResidents = residents?.filter((r) => {
-    const displayName = r.name || r.nome || "";
+    const displayName = r.name || "";
     return displayName.toLowerCase().includes(search.toLowerCase());
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 sm:p-8">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 p-4 sm:p-8">
       <div className="mx-auto max-w-5xl">
         {/* Header */}
         <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
@@ -97,8 +88,8 @@ export default function ResidentesList() {
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredResidents.map((resident, idx) => {
-              const displayName = resident.name || resident.nome || "Sem Nome";
-              const photoUrl = resident.photo || resident.photo_url;
+              const displayName = resident.name || "Sem Nome";
+              const photoUrl = resident.photo;
               const idDisplay = resident.id ?? `N/A`;
 
               return (
@@ -107,9 +98,11 @@ export default function ResidentesList() {
                   onClick={() => setSelectedResident(resident)}
                   className="group relative flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-700 bg-slate-800/50 p-0 shadow-lg transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/50 hover:bg-slate-700/80 hover:shadow-emerald-500/20"
                 >
-                  <div className="relative aspect-[4/5] w-full overflow-hidden bg-slate-900/50">
+                  <div className="relative aspect-4/5 w-full overflow-hidden bg-slate-900/50">
                     {photoUrl ? (
-                      <img
+                      <Image
+                        width={1080}
+                        height={1920}
                         src={photoUrl}
                         alt={displayName}
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -143,18 +136,22 @@ export default function ResidentesList() {
       {/* Modal */}
       {selectedResident && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm transition-all"
+          className="fixed inset-0 z-100 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm transition-all"
           onClick={() => setSelectedResident(null)}
+          aria-hidden="true"
         >
           <div
             className="relative w-full max-w-sm overflow-hidden rounded-3xl border border-slate-700 bg-slate-800 shadow-2xl animate-in fade-in zoom-in-95 duration-200"
-            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
           >
             <div className="relative aspect-square w-full bg-slate-900">
               {selectedResident.photo || selectedResident.photo_url ? (
-                <img
-                  src={selectedResident.photo || selectedResident.photo_url}
-                  alt={selectedResident.name || selectedResident.nome}
+                <Image
+                  width={1080}
+                  height={1920}
+                  src={selectedResident.photo || ""}
+                  alt={selectedResident.name || "Nome do residente"}
                   className="h-full w-full object-cover"
                 />
               ) : (
@@ -165,6 +162,7 @@ export default function ResidentesList() {
               <div className="absolute inset-0 bg-gradient-to-t from-slate-800 via-transparent to-transparent" />
 
               <button
+                type="button"
                 onClick={() => setSelectedResident(null)}
                 className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-slate-900/60 text-white backdrop-blur-md transition-colors hover:bg-red-500"
               >

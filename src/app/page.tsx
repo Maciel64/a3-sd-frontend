@@ -1,14 +1,15 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { Camera, ImageIcon, Upload, User, X } from "lucide-react";
+import Image from "next/image";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { CameraCapture } from "@/components/camera-capture";
 import { api } from "@/infra/api";
+import { usePostApiEmbeed } from "@/lib/api/client";
 
 const schema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
@@ -38,25 +39,27 @@ export default function Login() {
 
   const [mutationError, setMutationError] = useState<string | null>(null);
 
-  const mutation = useMutation<void, AxiosError, FormData>({
-    mutationFn: async (data) => {
-      const payload = new FormData();
+  const mutation = usePostApiEmbeed({
+    mutation: {
+      mutationFn: async ({ data }) => {
+        const payload = new FormData();
 
-      payload.append("name", data.name);
-      payload.append("photo", data.photo);
+        payload.append("name", data.name);
+        payload.append("photo", data.photo);
 
-      await api.post("/embeed", payload);
+        const res = await api.post("/api/embeed", payload);
+
+        return { success: true, resident: res.data };
+      },
+      onError: (error: AxiosError) => {
+        const message = error.response?.data as any;
+
+        console.log("error.error", message.error);
+
+        setMutationError(message.error);
+      },
+      onSuccess: () => setMutationError(null),
     },
-    onError: (error) => {
-      const message =
-        error.response?.data &&
-        typeof error.response.data === "object" &&
-        "error" in error.response.data
-          ? (error.response.data as { error: string }).error
-          : "Erro ao cadastrar usuário. Tente novamente.";
-      setMutationError(message);
-    },
-    onSuccess: () => setMutationError(null),
   });
 
   const clearError = () => setMutationError(null);
@@ -101,11 +104,11 @@ export default function Login() {
 
   const onSubmit = (data: FormData) => {
     clearError();
-    mutation.mutate(data);
+    mutation.mutate({ data });
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <div className="mb-4 inline-flex items-center justify-center rounded-full bg-emerald-500/10 p-4">
@@ -143,9 +146,9 @@ export default function Login() {
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label className="block text-sm font-medium text-slate-300">
+                <span className="block text-sm font-medium text-slate-300">
                   Foto para reconhecimento
-                </label>
+                </span>
                 {!previewUrl && (
                   <div className="flex gap-1 rounded-lg bg-slate-700/50 p-0.5">
                     <button
@@ -178,7 +181,9 @@ export default function Login() {
 
               {previewUrl ? (
                 <div className="relative overflow-hidden rounded-xl border border-slate-600 bg-slate-900/50">
-                  <img
+                  <Image
+                    width={1080}
+                    height={1920}
                     src={previewUrl}
                     alt="Preview"
                     className="h-48 w-full object-cover"
