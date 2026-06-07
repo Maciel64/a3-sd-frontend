@@ -9,7 +9,6 @@
 export type PostApiRecognize200Resident = {
   id: string;
   name: string;
-  photo: string;
   createdAt: string;
   updatedAt: string;
 };

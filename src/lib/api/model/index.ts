@@ -6,6 +6,9 @@
  * OpenAPI spec version: 0.0.0
  */
 
+export * from './getApiConfigByName200';
+export * from './getApiConfigByName200Config';
+export * from './getApiConfigByName404';
 export * from './getApiResidents200Item';
 export * from './getApiResidents200ItemCreatedAt';
 export * from './getApiResidents200ItemUpdatedAt';
@@ -23,3 +26,11 @@ export * from './postApiRecognize200ResidentAnyOf';
 export * from './postApiRecognizeBodyOne';
 export * from './postApiRecognizeBodyThree';
 export * from './postApiRecognizeBodyTwo';
+export * from './putApiConfig201';
+export * from './putApiConfig201Config';
+export * from './putApiConfigBodyOne';
+export * from './putApiConfigBodyOneValue';
+export * from './putApiConfigBodyThree';
+export * from './putApiConfigBodyThreeValue';
+export * from './putApiConfigBodyTwo';
+export * from './putApiConfigBodyTwoValue';

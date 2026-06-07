@@ -25,6 +25,8 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  GetApiConfigByName200,
+  GetApiConfigByName404,
   GetApiResidents200Item,
   GetApiResidents400,
   PostApiEmbeed200,
@@ -36,7 +38,11 @@ import type {
   PostApiRecognize200,
   PostApiRecognizeBodyOne,
   PostApiRecognizeBodyThree,
-  PostApiRecognizeBodyTwo
+  PostApiRecognizeBodyTwo,
+  PutApiConfig201,
+  PutApiConfigBodyOne,
+  PutApiConfigBodyThree,
+  PutApiConfigBodyTwo
 } from './model';
 
 import { axiosMutator } from '../../infra/api';
@@ -242,6 +248,149 @@ const {mutation: mutationOptions} = options ?
       > => {
 
       const mutationOptions = getPostApiRecognizeMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    
+export const getApiConfigByName = (
+    name: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return axiosMutator<GetApiConfigByName200>(
+      {url: `/api/config/${name}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiConfigByNameQueryKey = (name?: string,) => {
+    return [
+    `/api/config/${name}`
+    ] as const;
+    }
+
+    
+export const getGetApiConfigByNameQueryOptions = <TData = Awaited<ReturnType<typeof getApiConfigByName>>, TError = GetApiConfigByName404>(name: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiConfigByName>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiConfigByNameQueryKey(name);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiConfigByName>>> = ({ signal }) => getApiConfigByName(name, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(name), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiConfigByName>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiConfigByNameQueryResult = NonNullable<Awaited<ReturnType<typeof getApiConfigByName>>>
+export type GetApiConfigByNameQueryError = GetApiConfigByName404
+
+
+export function useGetApiConfigByName<TData = Awaited<ReturnType<typeof getApiConfigByName>>, TError = GetApiConfigByName404>(
+ name: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiConfigByName>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiConfigByName>>,
+          TError,
+          Awaited<ReturnType<typeof getApiConfigByName>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiConfigByName<TData = Awaited<ReturnType<typeof getApiConfigByName>>, TError = GetApiConfigByName404>(
+ name: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiConfigByName>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiConfigByName>>,
+          TError,
+          Awaited<ReturnType<typeof getApiConfigByName>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiConfigByName<TData = Awaited<ReturnType<typeof getApiConfigByName>>, TError = GetApiConfigByName404>(
+ name: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiConfigByName>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetApiConfigByName<TData = Awaited<ReturnType<typeof getApiConfigByName>>, TError = GetApiConfigByName404>(
+ name: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiConfigByName>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiConfigByNameQueryOptions(name,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const putApiConfig = (
+    putApiConfigBody: PutApiConfigBodyOne | PutApiConfigBodyTwo | PutApiConfigBodyThree,
+ ) => {
+      
+      
+      return axiosMutator<PutApiConfig201>(
+      {url: `/api/config`, method: 'PUT',
+      data: putApiConfigBody
+    },
+      );
+    }
+  
+
+
+export const getPutApiConfigMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiConfig>>, TError,{data: PutApiConfigBodyOne | PutApiConfigBodyTwo | PutApiConfigBodyThree}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof putApiConfig>>, TError,{data: PutApiConfigBodyOne | PutApiConfigBodyTwo | PutApiConfigBodyThree}, TContext> => {
+
+const mutationKey = ['putApiConfig'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiConfig>>, {data: PutApiConfigBodyOne | PutApiConfigBodyTwo | PutApiConfigBodyThree}> = (props) => {
+          const {data} = props ?? {};
+
+          return  putApiConfig(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutApiConfigMutationResult = NonNullable<Awaited<ReturnType<typeof putApiConfig>>>
+    export type PutApiConfigMutationBody = PutApiConfigBodyOne | PutApiConfigBodyTwo | PutApiConfigBodyThree
+    export type PutApiConfigMutationError = unknown
+
+    export const usePutApiConfig = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiConfig>>, TError,{data: PutApiConfigBodyOne | PutApiConfigBodyTwo | PutApiConfigBodyThree}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putApiConfig>>,
+        TError,
+        {data: PutApiConfigBodyOne | PutApiConfigBodyTwo | PutApiConfigBodyThree},
+        TContext
+      > => {
+
+      const mutationOptions = getPutApiConfigMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

@@ -5,10 +5,9 @@
  * Development documentation
  * OpenAPI spec version: 0.0.0
  */
+import type { PutApiConfig201Config } from './putApiConfig201Config';
 
-export type PostApiEmbeed200Resident = {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
+export type PutApiConfig201 = {
+  success: boolean;
+  config: PutApiConfig201Config;
 };

@@ -6,9 +6,6 @@
  * OpenAPI spec version: 0.0.0
  */
 
-export type PostApiEmbeed200Resident = {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
+export type GetApiConfigByName404 = {
+  error: string;
 };

@@ -1,6 +1,14 @@
 "use client";
 
-import { ScanFace, UserPlus, Users, Menu, X } from "lucide-react";
+import {
+  Cpu,
+  DownloadCloud,
+  Menu,
+  ScanFace,
+  UserPlus,
+  Users,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -9,6 +17,8 @@ const links = [
   { href: "/", label: "Cadastro", icon: UserPlus },
   { href: "/entrar", label: "Validar Rosto", icon: ScanFace },
   { href: "/residentes", label: "Residentes", icon: Users },
+  { href: "/micro", label: "Microcontrolador", icon: Cpu },
+  { href: "/mobile", label: "Mobile", icon: DownloadCloud },
 ];
 
 export function Navbar() {
@@ -19,7 +29,7 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 border-b border-slate-700/50 bg-slate-900/80 backdrop-blur-md">
-      <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
         <Link
           href="/"
           className="flex items-center gap-2 text-lg font-bold text-white"
@@ -57,7 +67,11 @@ export function Navbar() {
           className="md:hidden p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-colors"
           aria-label="Alternar menu"
         >
-          {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {isMobileMenuOpen ? (
+            <X className="h-5 w-5" />
+          ) : (
+            <Menu className="h-5 w-5" />
+          )}
         </button>
       </div>
 

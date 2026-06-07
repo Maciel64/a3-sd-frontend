@@ -6,9 +6,11 @@
  * OpenAPI spec version: 0.0.0
  */
 
-export type PostApiEmbeed200Resident = {
+export type PutApiConfig201Config = {
   id: string;
   name: string;
+  value: string;
+  type: string;
   createdAt: string;
   updatedAt: string;
 };

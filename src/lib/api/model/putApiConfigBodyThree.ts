@@ -5,10 +5,9 @@
  * Development documentation
  * OpenAPI spec version: 0.0.0
  */
+import type { PutApiConfigBodyThreeValue } from './putApiConfigBodyThreeValue';
 
-export type PostApiEmbeed200Resident = {
-  id: string;
+export type PutApiConfigBodyThree = {
   name: string;
-  createdAt: string;
-  updatedAt: string;
+  value: PutApiConfigBodyThreeValue;
 };
