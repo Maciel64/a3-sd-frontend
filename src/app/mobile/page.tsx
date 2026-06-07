@@ -1,8 +1,8 @@
 "use client";
 
-import { Download, Smartphone, Info, ShieldCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Download, Info, ShieldCheck, Smartphone } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function MobilePage() {
   const router = useRouter();
@@ -47,7 +47,7 @@ export default function MobilePage() {
           <Button
             onClick={() =>
               router.push(
-                "https://github.com/Maciel64/a3-sd-mobile/blob/main/releases/0.0.1_app-release.apk?raw=true",
+                "https://github.com/Maciel64/a3-sd-mobile/blob/main/releases/0.0.2_app-release.apk?raw=true",
               )
             }
             className="w-full bg-blue-500 hover:bg-blue-600 text-white shadow-lg shadow-blue-500/20 py-6 rounded-xl text-lg font-medium transition-all hover:scale-[1.02] active:scale-[0.98] group"
