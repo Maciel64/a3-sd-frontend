@@ -174,7 +174,18 @@ export default function ValidarRosto() {
                   />
                 </div>
               ) : (
-                <div className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-600 p-10 text-center transition-all hover:border-emerald-500/50 hover:bg-slate-700/30">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => fileInputRef.current?.click()}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      fileInputRef.current?.click();
+                    }
+                  }}
+                  className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-600 p-10 text-center transition-all hover:border-emerald-500/50 hover:bg-slate-700/30"
+                >
                   <input
                     ref={fileInputRef}
                     type="file"
