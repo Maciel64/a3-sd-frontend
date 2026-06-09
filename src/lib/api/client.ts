@@ -36,6 +36,7 @@ import type {
   PostApiEmbeedBodyThree,
   PostApiEmbeedBodyTwo,
   PostApiRecognize200,
+  PostApiRecognize404,
   PostApiRecognizeBodyOne,
   PostApiRecognizeBodyThree,
   PostApiRecognizeBodyTwo,
@@ -209,7 +210,7 @@ export const postApiRecognize = (
   
 
 
-export const getPostApiRecognizeMutationOptions = <TError = unknown,
+export const getPostApiRecognizeMutationOptions = <TError = PostApiRecognize404,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiRecognize>>, TError,{data: PostApiRecognizeBodyOne | PostApiRecognizeBodyTwo | PostApiRecognizeBodyThree}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiRecognize>>, TError,{data: PostApiRecognizeBodyOne | PostApiRecognizeBodyTwo | PostApiRecognizeBodyThree}, TContext> => {
 
@@ -236,9 +237,9 @@ const {mutation: mutationOptions} = options ?
 
     export type PostApiRecognizeMutationResult = NonNullable<Awaited<ReturnType<typeof postApiRecognize>>>
     export type PostApiRecognizeMutationBody = PostApiRecognizeBodyOne | PostApiRecognizeBodyTwo | PostApiRecognizeBodyThree
-    export type PostApiRecognizeMutationError = unknown
+    export type PostApiRecognizeMutationError = PostApiRecognize404
 
-    export const usePostApiRecognize = <TError = unknown,
+    export const usePostApiRecognize = <TError = PostApiRecognize404,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiRecognize>>, TError,{data: PostApiRecognizeBodyOne | PostApiRecognizeBodyTwo | PostApiRecognizeBodyThree}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiRecognize>>,

@@ -23,6 +23,7 @@ export * from './postApiEmbeedBodyTwo';
 export * from './postApiRecognize200';
 export * from './postApiRecognize200Resident';
 export * from './postApiRecognize200ResidentAnyOf';
+export * from './postApiRecognize404';
 export * from './postApiRecognizeBodyOne';
 export * from './postApiRecognizeBodyThree';
 export * from './postApiRecognizeBodyTwo';

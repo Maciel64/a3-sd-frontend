@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { AxiosError } from "axios";
 import {
   Camera,
   CheckCircle2,
@@ -41,6 +42,7 @@ export default function ValidarRosto() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [inputMode, setInputMode] = useState<InputMode>("camera");
   const [residentName, setResidentName] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const mutation = usePostApiRecognize({
     mutation: {
@@ -53,6 +55,11 @@ export default function ValidarRosto() {
       },
       onSuccess: (data) => {
         setResidentName(data.resident?.name || null);
+        setErrorMessage(null);
+      },
+      onError: (error: any) => {
+        setErrorMessage(error.response?.data?.error || error.response?.data?.message || "Ocorreu um erro na validação");
+        setResidentName(null);
       },
     },
   });
@@ -61,6 +68,7 @@ export default function ValidarRosto() {
     if (!file.type.startsWith("image/")) return;
     setValue("photo", file, { shouldValidate: true });
     setResidentName(null);
+    setErrorMessage(null);
     const reader = new FileReader();
     reader.onloadend = () => setPreviewUrl(reader.result as string);
     reader.readAsDataURL(file);
@@ -75,10 +83,14 @@ export default function ValidarRosto() {
     setValue("photo", undefined as unknown as File, { shouldValidate: true });
     setPreviewUrl(null);
     setResidentName(null);
+    setErrorMessage(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const onSubmit = (data: FormData) => mutation.mutate({ data });
+  const onSubmit = (data: FormData) => {
+    setErrorMessage(null);
+    mutation.mutate({ data });
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -220,6 +232,16 @@ export default function ValidarRosto() {
                 </p>
                 <p className="mt-1 text-2xl font-bold text-white">
                   {residentName}
+                </p>
+              </div>
+            ) : errorMessage ? (
+              <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 p-6 text-center">
+                <X className="mx-auto mb-3 h-12 w-12 text-red-400" />
+                <p className="text-lg font-semibold text-red-400">
+                  Erro na Validação
+                </p>
+                <p className="mt-1 text-sm font-medium text-white">
+                  {errorMessage}
                 </p>
               </div>
             ) : (
